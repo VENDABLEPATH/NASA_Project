@@ -1,7 +1,9 @@
 const { launches } = require('../../models/launches.model');
 
 function getLaunches(req, res){
-    return res.status(200).json(launches);
+    for (const value of launches.values()){
+        return res.status(200).json(value);
+    };
 };
 
 module.exports = {
