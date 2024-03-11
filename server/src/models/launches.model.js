@@ -15,6 +15,10 @@ const launch = {
 
 launches.set(launch.flightNumber, launch);
 
+function hasFlight(id){
+    return launches.has(id);
+}
+
 function getAllLaunches (){
     return Array.from(launches.values());
 };
@@ -30,11 +34,15 @@ function setLaunch(launch){
 }
 
 function removeLaunch(launch){
-    launches.delete(launch); 
+    const flight = launches.get(launch);
+    flight.upcoming = false;
+    flight.success = false;
+    return flight;
 }
 
 module.exports = {
     getAllLaunches,
     setLaunch,
+    hasFlight,
     removeLaunch
 };

@@ -1,4 +1,4 @@
-const { getAllLaunches, setLaunch, removeLaunch } = require('../../models/launches.model');
+const { getAllLaunches, setLaunch, removeLaunch, hasFlight } = require('../../models/launches.model');
 
 function httpGetLaunches(req, res){
     return res.status(200).json(getAllLaunches());
@@ -22,12 +22,16 @@ function httpSetLaunch(req, res){
 };
  
 function httpRemoveLaunch(req, res){
-    const flightNumber = req.body.id;
-    if (getAllLaunches().find(e => e.flightNumber === flightNumber)){
-        removeLaunch(flightNumber);
-        return res.status(200).json({success: `Flight ${flightNumber} removed.`});
+    if (isNaN(req.params.id)){
+       return res.status(400).json({error: 'Invalid flight number.'});  
+    }
+    const flightNumber = Number(req.params.id);
+
+    if (hasFlight(flightNumber)){
+        const flight = removeLaunch(flightNumber);
+        return res.status(200).json(flight);
     } else {
-        return res.status(404).json({error: 'Flight not found.'}); 
+        return res.status(404).json({error: 'Flight not found.'});
     };
 }
 

@@ -6,7 +6,7 @@ const { httpGetLaunches, httpSetLaunch, httpRemoveLaunch } = require('./launches
 
 launchesRouter.get('/', httpGetLaunches);
 launchesRouter.post('/', httpSetLaunch);
-launchesRouter.delete('/', httpRemoveLaunch);
+launchesRouter.delete('/:id', httpRemoveLaunch);
 
 module.exports = launchesRouter;
 
