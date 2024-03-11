@@ -32,8 +32,11 @@ async function loadData(){
     });
 };
 
+function getAllPlanets(){
+    return planets;
+}
 
 module.exports = {
     loadData,
-    planets
+   getAllPlanets
 }
