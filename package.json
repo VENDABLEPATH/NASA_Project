@@ -13,7 +13,9 @@
     "build": "npm run build --prefix client",
     "start": "npm run start --prefix server",
     "deploy": "run-s build start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-s": "npm test --prefix server",
+    "test-c": "npm test --prefix client",
+    "test": "run -s test-s test-c"
   },
   "keywords": [],
   "author": "",
