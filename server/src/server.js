@@ -25,7 +25,7 @@ async function startServer(){
     await loadData();
     
     server.listen(PORT, () => {
-        console.log(`Server is active.`);
+        console.log(`Server is active. Port: ${PORT}`);
     });
 }
 

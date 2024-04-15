@@ -1,10 +1,10 @@
 const { getAllLaunches, setLaunch, removeLaunch, hasFlight } = require('../../models/launches.model');
 
-function httpGetLaunches(req, res){
-    return res.status(200).json(getAllLaunches());
+async function httpGetLaunches(req, res){
+    return res.status(200).json(await getAllLaunches());
 };
 
-function httpSetLaunch(req, res){
+async function httpSetLaunch(req, res){
     const launch = req.body;
 
     if (!launch.mission || !launch.rocket || !launch.launchDate || !launch.target){
@@ -17,18 +17,22 @@ function httpSetLaunch(req, res){
         return res.status(400).json({error: 'Invalid launch date.'}); 
     };
 
-    setLaunch(launch);
-    return res.status(201).json(launch);
+    try {
+        await setLaunch(launch);
+        return res.status(201).json(launch);
+    } catch(err){
+        return res.status(400).json({error: 'Destination planet does not exist.'});
+    };
 };
  
-function httpRemoveLaunch(req, res){
+async function httpRemoveLaunch(req, res){
     if (isNaN(req.params.id)){
        return res.status(400).json({error: 'Invalid flight number.'});  
     }
     const flightNumber = Number(req.params.id);
 
-    if (hasFlight(flightNumber)){
-        const flight = removeLaunch(flightNumber);
+    if (await hasFlight(flightNumber)){
+        const flight = await removeLaunch(flightNumber);
         return res.status(200).json(flight);
     } else {
         return res.status(404).json({error: 'Flight not found.'});

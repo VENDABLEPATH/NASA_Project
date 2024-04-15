@@ -1,43 +1,65 @@
-const launches = new Map();
+const launches = require('./launches.mongo');
+const { planetExists } = require('./planets.model');
 
-let latestFlightNumber = 100;
+const DEFAULT_FLIGHT_NUMBER = 100;
 
-const launch = {
-    flightNumber: 100,
-    mission: "Kepler Exploration x",
-    rocket: "Explorer IS1",
-    launchDate: new Date('December 27, 2030'),
-    target: "Kepler-442 b",
-    customers: ['NASA', 'ZTM'],
-    upcoming: true,
-    success: true,
-};
+async function getFlightNumber(){
+    const latestLaunch = await launches.findOne({}).sort('-flightNumber');
 
-launches.set(launch.flightNumber, launch);
+    if (!latestLaunch){
+        return DEFAULT_FLIGHT_NUMBER;
+    };
 
-function hasFlight(id){
-    return launches.has(id);
+    return latestLaunch.flightNumber + 1;
 }
 
-function getAllLaunches (){
-    return Array.from(launches.values());
+async function hasFlight(id){
+    return (await launches.find({flightNumber: id})).length > 0;
+}
+
+async function getAllLaunches(){
+    return await launches.find({}, "-__v -_id");
 };
 
-function setLaunch(launch){
-    latestFlightNumber++;
-    launches.set(latestFlightNumber, Object.assign(launch, {
-        customers: ['ZTM', 'NASA'],
+async function setLaunch(launch){
+    let latestFlightNumber = await getFlightNumber();
+
+    // check planet exists
+    if (await planetExists(launch.target) === 0){
+        throw new Error('Destination planet does not exist.');
+    }; 
+
+    // add attributes to launch
+    const newLaunch = Object.assign(launch, {
         flightNumber: latestFlightNumber,
+        customers: ['ZTM', 'NASA'],
         upcoming: true,
-        success: true
-    }));
+        success: true 
+    });
+
+    try {
+        await launches.updateOne({
+           flightNumber: latestFlightNumber 
+        }, newLaunch, {
+            upsert: true
+        });
+    } catch(err){
+        console.error(`Could not save launch. ${err}`);
+    };
 }
 
-function removeLaunch(launch){
-    const flight = launches.get(launch);
-    flight.upcoming = false;
-    flight.success = false;
-    return flight;
+async function removeLaunch(flightNumber){
+    try {
+        await launches.updateOne({
+            flightNumber: flightNumber
+        }, {
+            success: false,
+            upcoming: false
+        })
+        return await launches.find({flightNumber: flightNumber})
+    } catch(err) {
+        console.error(`Could not remove launch. ${err}`);
+    };
 }
 
 module.exports = {
