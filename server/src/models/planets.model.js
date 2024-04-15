@@ -37,7 +37,7 @@ async function getAllPlanets(){
 }
 
 async function planetExists(planet){
-    return (await planets.find({keplerName: planet}, '-__v, -_id')).length;
+    return (await planets.find({keplerName: planet}, '-__v, -_id')).length > 0;
 }
 
 async function savePlanet(planet){

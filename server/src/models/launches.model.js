@@ -25,7 +25,7 @@ async function setLaunch(launch){
     let latestFlightNumber = await getFlightNumber();
 
     // check planet exists
-    if (await planetExists(launch.target) === 0){
+    if (!await planetExists(launch.target)){
         throw new Error('Destination planet does not exist.');
     }; 
 
