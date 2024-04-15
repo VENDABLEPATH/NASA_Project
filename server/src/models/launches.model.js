@@ -55,7 +55,7 @@ async function removeLaunch(flightNumber){
         }, {
             success: false,
             upcoming: false
-        })
+        });
         return aborted.modifiedCount === 1;
     } catch(err) {
         console.error(`Could not remove launch. ${err}`);
