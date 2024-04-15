@@ -50,13 +50,13 @@ async function setLaunch(launch){
 
 async function removeLaunch(flightNumber){
     try {
-        await launches.updateOne({
+        const aborted = await launches.updateOne({
             flightNumber: flightNumber
         }, {
             success: false,
             upcoming: false
         })
-        return await launches.find({flightNumber: flightNumber})
+        return aborted.ok === 1 && aborted.nModified === 1;
     } catch(err) {
         console.error(`Could not remove launch. ${err}`);
     };

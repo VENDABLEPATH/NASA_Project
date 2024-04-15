@@ -32,8 +32,12 @@ async function httpRemoveLaunch(req, res){
     const flightNumber = Number(req.params.id);
 
     if (await hasFlight(flightNumber)){
-        const flight = await removeLaunch(flightNumber);
-        return res.status(200).json(flight);
+        const aborted = await removeLaunch(flightNumber);
+        if (aborted){
+            res.status(400).json({ error: 'Launch not aborted.'});
+        } else {
+            res.status(200).json({OK: true});
+        }
     } else {
         return res.status(404).json({error: 'Flight not found.'});
     };
