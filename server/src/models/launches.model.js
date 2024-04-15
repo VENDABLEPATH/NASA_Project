@@ -38,7 +38,7 @@ async function setLaunch(launch){
     });
 
     try {
-        await launches.updateOne({
+        await launches.findOneAndUpdate({
            flightNumber: latestFlightNumber 
         }, newLaunch, {
             upsert: true
