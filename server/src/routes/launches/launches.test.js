@@ -17,7 +17,7 @@ describe('Launches API', () => {
 
         test('Test should respond with 200 status', async function(){
             const response = await request(app)
-                .get('/launches')
+                .get('/v1/launches')
                 .expect('Content-Type', /json/)
                 .expect(200);
         });
@@ -40,7 +40,7 @@ describe('Launches API', () => {
     
         test('POST should respond with 201', async function(){
             const response = await request(app)
-                .post('/launches')
+                .post('/v1/launches')
                 .send(blockWithDate)
                 .expect(201)
                 .expect('Content-Type', /json/);
@@ -53,7 +53,7 @@ describe('Launches API', () => {
     
         test('POST should respond with 400 for invalid date', async function(){
             const response = await request(app)
-                .post('/launches')
+                .post('/v1/launches')
                 .send({
                     mission: 'Kepler Exploration Alpha',
                     target: 'Kepler-62 f',
@@ -68,7 +68,7 @@ describe('Launches API', () => {
     
         test('POST should respond with 400 for missing property', async function(){
             const response = await request(app)
-                .post('/launches')
+                .post('/v1/launches')
                 .send({
                     mission: 'Kepler Exploration Alpha',
                     target: '',
