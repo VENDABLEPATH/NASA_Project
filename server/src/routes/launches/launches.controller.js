@@ -1,7 +1,9 @@
-const { getAllLaunches, setLaunch, removeLaunch, hasFlight } = require('../../models/launches.model');
+const { getAllLaunches, saveNewLaunch, removeLaunch, hasFlight } = require('../../models/launches.model');
+const getPagination = require('../../services/query');
 
 async function httpGetLaunches(req, res){
-    return res.status(200).json(await getAllLaunches());
+    const {limit, skip} = getPagination(req.query);
+    return res.status(200).json(await getAllLaunches(limit, skip));
 };
 
 async function httpSetLaunch(req, res){
@@ -18,7 +20,7 @@ async function httpSetLaunch(req, res){
     };
 
     try {
-        await setLaunch(launch);
+        await saveNewLaunch(launch);
         return res.status(201).json(launch);
     } catch(err){
         return res.status(400).json({error: 'Destination planet does not exist.'});
