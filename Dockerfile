@@ -11,7 +11,7 @@ COPY server/package*.json server/
 RUN npm run install-server --omit=dev
 
 COPY client/ client/
-RUN npm run build --prefix client
+RUN export BUILD_PATH=../server/public && npm run build --prefix client
 
 COPY server/ server/
 
